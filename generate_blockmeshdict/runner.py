@@ -34,7 +34,7 @@ def generate_blockMeshDict(nturb, dx, dy, diameter, max_cells):
     ny = round(domain_length / cell_size)
     nz = round(height / cell_size)
 
-    print(f"Cell size: {cell_size:.3f}m, Resolutions: nx={nx}, ny={ny}, nz={nz}")
+    print(f"(II) Cell size: {cell_size:.3f}m, Resolutions: nx={nx}, ny={ny}, nz={nz}")
 
     # Define vertices
     vertices = [
@@ -49,7 +49,16 @@ def generate_blockMeshDict(nturb, dx, dy, diameter, max_cells):
     ]
     nl = "\n"
     # Create blockMeshDict content
-    blockMeshDict = f"""\
+    blockMeshDict = f"""/*--------------------------------*- C++ -*----------------------------------*\\
+| =========                 |                                                 |
+| \\\\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\\\    /   O peration     | Version:  v2312                                 |
+|   \\\\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\\\/     M anipulation  |                                                 |
+\\*---------------------------------------------------------------------------*/
+"""
+    
+    blockMeshDict += f"""\
 FoamFile
 {{
     version     2.0;
@@ -115,11 +124,11 @@ boundary
 
     # Write to file
     os.makedirs("runfolder/system", exist_ok=True)
+
     with open("runfolder/system/blockMeshDict", "w") as f:
         f.write(blockMeshDict)
 
     print("blockMeshDict generated successfully.")
-
 
 def main():
     args = get_options()
