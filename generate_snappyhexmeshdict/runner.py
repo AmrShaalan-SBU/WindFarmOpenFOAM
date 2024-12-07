@@ -29,12 +29,14 @@ FoamFile
     format      ascii;
     class       dictionary;
     object      {dictName};
-}}"""
+}}
+// ************************************************************************* //
+"""
 
     return header_string
 
 
-def get_snappy_peamble():
+def get_snappy_preamble():
     """Returns a string meshing options on/off"""
     preamble_string = """castellatedMesh true;
 snap true;
@@ -335,7 +337,7 @@ def generate_snappy_hex_mesh_dict(nturb, dx, dy, diameter, output_folder):
 
     snappyHexMeshDict = get_header_string("snappyHexMeshDict") + "\n"
 
-    snappyHexMeshDict += get_snappy_peamble()
+    snappyHexMeshDict += get_snappy_preamble()
 
     snappyHexMeshDict += generate_snappy_geometry(nturb=nturb, dx=dx, dy=dy, D=D)
 
@@ -360,7 +362,7 @@ def generate_snappy_hex_mesh_dict(nturb, dx, dy, diameter, output_folder):
     with open(output_path, "w") as f:
         f.write(snappyHexMeshDict)
 
-    print(f"snappyHexMeshDict generated successfully at {output_path}")
+    print("(I) snappyHexMeshDict generated successfully")
 
 
 def main():

@@ -13,6 +13,28 @@ def get_options():
     parser.add_argument("--output_folder", type=str, default="runfolder", help="Folder to save blockMesh.")
     return parser.parse_args()
 
+def get_header_string(dictName):
+    """Returns a string with the OpenFOAM dict header using the input dictionary name"""
+
+    header_string = f"""/*--------------------------------*- C++ -*----------------------------------*\\
+| =========                 |                                                 |
+| \\\\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\\\    /   O peration     | Version:  v2312                                 |
+|   \\\\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\\\/     M anipulation  |                                                 |
+\\*---------------------------------------------------------------------------*/
+FoamFile
+{{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      {dictName};
+}}
+// ************************************************************************* //
+"""
+
+    return header_string
+
 
 def generate_blockMeshDict(nturb, dx, dy, diameter, max_cells):
     """Generates a blockMeshDict with uniform cubic cells."""
@@ -49,14 +71,7 @@ def generate_blockMeshDict(nturb, dx, dy, diameter, max_cells):
     ]
     nl = "\n"
     # Create blockMeshDict content
-    blockMeshDict = f"""/*--------------------------------*- C++ -*----------------------------------*\\
-| =========                 |                                                 |
-| \\\\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
-|  \\\\    /   O peration     | Version:  v2312                                 |
-|   \\\\  /    A nd           | Website:  www.openfoam.com                      |
-|    \\\\/     M anipulation  |                                                 |
-\\*---------------------------------------------------------------------------*/
-"""
+    blockMeshDict = get_header_string("blockMeshDict")
     
     blockMeshDict += f"""\
 FoamFile
@@ -128,7 +143,7 @@ boundary
     with open("runfolder/system/blockMeshDict", "w") as f:
         f.write(blockMeshDict)
 
-    print("blockMeshDict generated successfully.")
+    print("(I) blockMeshDict generated successfully.")
 
 def main():
     args = get_options()

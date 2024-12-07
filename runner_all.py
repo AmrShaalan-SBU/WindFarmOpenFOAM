@@ -4,9 +4,6 @@ import os
 
 def main():
     # Set paths
-    geometry_script = "prepare_geometry/runner.py"
-    blockmesh_script = "generate_blockmeshdict/runner.py"
-    decomposePar_script = "generate_decomposepardict/runner.py"
 
     prepare_geometryScript = os.path.join(os.path.dirname(__file__), "prepare_geometry/runner.py")
     if not os.path.exists(prepare_geometryScript):
@@ -24,6 +21,10 @@ def main():
     if not os.path.exists(generate_snappyHexMeshDictScript):
         raise FileNotFoundError(f"Script {generate_snappyHexMeshDictScript} not found. Ensure it exists in the same directory.")
 
+    generate_dynamicmeshdictScript = os.path.join(os.path.dirname(__file__), "generate_dynamicmeshdict/runner.py")
+    if not os.path.exists(generate_dynamicmeshdictScript):
+        raise FileNotFoundError(f"Script {generate_snappyHexMeshDictScript} not found. Ensure it exists in the same directory.")
+
 
     # Ensure runfolder exists
     os.makedirs("runfolder", exist_ok=True)
@@ -34,6 +35,7 @@ def main():
     diameter = 1.46
     max_cells = 120
     n_subdomains = 95
+    rps = 15.96
 
     # running prepare geometry
     try:
@@ -71,6 +73,36 @@ def main():
         print("(I) run_snappyhexmesh ran successfully")
 
     print("(I) Setup completed successfully.")
+
+    # running dynamicMeshDict
+    try:
+        run_dynamicmeshdict_generator(dynamicmesh_path=generate_dynamicmeshdictScript, nturb=nturb, dx=dx, dy=dy, rps=rps)
+    except:
+        raise Exception("ERROR: run_dynamicmeshdict Failed")
+    else:
+        print("(I) run_dynamicmeshdict ran successfully")
+
+
+def run_dynamicmeshdict_generator(dynamicmesh_path, nturb, dx, dy, rps):
+    """
+    Runs the dynamicMeshDict generator script.
+    """
+    try:
+        subprocess.run([
+            "python", dynamicmesh_path,
+            "--nturb", str(nturb),
+            "--dx", str(dx),
+            "--dy", str(dy),
+            "--rps", str(rps)
+
+        ])
+
+        check=True
+
+        print("(I) decomposeParDict generation completed successfully.")
+    except subprocess.CalledProcessError as e:
+        print(f"Error while running decomposeParMeshDict generator: {e}")
+        raise
 
 
 def run_decomposePar_generator(decomposePar_script, n_subdomains):

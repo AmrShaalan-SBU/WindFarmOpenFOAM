@@ -1,12 +1,10 @@
 import argparse
 import os
 
+def get_header_string(dictName):
+    """Returns a string with the OpenFOAM dict header using the input dictionary name"""
 
-def generate_decomposeParDict(output_folder, n_subdomains):
-    """
-    Generates a decomposeParDict file with the specified number of subdomains.
-    """
-    decomposeParDict_content = f"""/*--------------------------------*- C++ -*----------------------------------*\\
+    header_string = f"""/*--------------------------------*- C++ -*----------------------------------*\\
 | =========                 |                                                 |
 | \\\\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
 |  \\\\    /   O peration     | Version:  v2312                                 |
@@ -18,9 +16,21 @@ FoamFile
     version     2.0;
     format      ascii;
     class       dictionary;
-    object      decomposeParDict;
+    object      {dictName};
 }}
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+// ************************************************************************* //
+"""
+
+    return header_string
+
+
+def generate_decomposeParDict(output_folder, n_subdomains):
+    """
+    Generates a decomposeParDict file with the specified number of subdomains.
+    """
+    decomposeParDict_content = get_header_string("decomposeParDict")
+
+    decomposeParDict_content +=f"""
 
 numberOfSubdomains {n_subdomains};
 
@@ -36,7 +46,7 @@ method          scotch;
     with open(output_file, "w") as file:
         file.write(decomposeParDict_content)
 
-    print(f"decomposeParDict created at: {output_file}")
+    print(f"(I) decomposeParDict created at: {output_file}")
 
 
 def get_options():
