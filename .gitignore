@@ -1,0 +1,10 @@
+# Ignore runfolder outputs
+runfolder/
+
+# Ignore Python bytecode
+__pycache__/
+*.pyc
+
+# Ignore temporary files
+*.tmp
+*.log
