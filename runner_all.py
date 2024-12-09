@@ -25,6 +25,14 @@ def main():
     if not os.path.exists(generate_dynamicmeshdictScript):
         raise FileNotFoundError(f"Script {generate_snappyHexMeshDictScript} not found. Ensure it exists in the same directory.")
 
+    generate_turbPropScript = os.path.join(os.path.dirname(__file__), "generate_turbulence_properties/runner.py")
+    if not os.path.exists(generate_turbPropScript):
+        raise FileNotFoundError(f"Script {generate_turbPropScript} not found. Ensure it exists in the same directory.")
+
+    generate_tranPropScript = os.path.join(os.path.dirname(__file__), "generate_transportProperties/runner.py")
+    if not os.path.exists(generate_tranPropScript):
+        raise FileNotFoundError(f"Script {generate_tranPropScript} not found. Ensure it exists in the same directory.")
+
 
     # Ensure runfolder exists
     os.makedirs("runfolder", exist_ok=True)
@@ -82,6 +90,22 @@ def main():
     else:
         print("(I) run_dynamicmeshdict ran successfully")
 
+    # running turbProp
+    try:
+        run_turbProp_generator(turbulence_prop_path=generate_turbPropScript)
+    except:
+        raise Exception("ERROR: run_turb_prop Failed")
+    else:
+        print("(I) run_turbProp_generator ran successfully")
+
+    # running tranProp
+    try:
+        run_tranProp_generator(transport_prop_path=generate_tranPropScript)
+    except:
+        raise Exception("ERROR: run_tran_prop Failed")
+    else:
+        print("(I) run_tranProp_generator ran successfully")
+
 
 def run_dynamicmeshdict_generator(dynamicmesh_path, nturb, dx, dy, rps):
     """
@@ -99,7 +123,6 @@ def run_dynamicmeshdict_generator(dynamicmesh_path, nturb, dx, dy, rps):
 
         check=True
 
-        print("(I) decomposeParDict generation completed successfully.")
     except subprocess.CalledProcessError as e:
         print(f"Error while running decomposeParMeshDict generator: {e}")
         raise
@@ -121,7 +144,6 @@ def run_decomposePar_generator(decomposePar_script, n_subdomains):
 
         check=True
 
-        print("decomposeParDict generation completed successfully.")
     except subprocess.CalledProcessError as e:
         print(f"Error while running decomposeParMeshDict generator: {e}")
         raise
@@ -147,7 +169,6 @@ def run_preparing_geometry(geometry_script, nturb, dx, dy, diameter):
 
         ])
         check=True
-        print("prepare_geometry completed successfully.")
     except subprocess.CalledProcessError as e:
         print(f"Error while running prepare_geometry: {e}")
         raise
@@ -176,7 +197,6 @@ def run_blockMeshDict_generator(blockmesh_script, nturb, dx, dy, diameter, max_c
 
         check=True
 
-        print("blockMeshDict generation completed successfully.")
     except subprocess.CalledProcessError as e:
         print(f"Error while running blockMeshDict generator: {e}")
         raise
@@ -204,11 +224,43 @@ def run_snappyHexMeshDict_generator(snappyhex_path, nturb, dx, dy, diameter):
             ],
             check=True
         )
-        print("snappyHexMeshDict generation completed successfully.")
     except subprocess.CalledProcessError as e:
         print(f"Error while running snappyHexMeshDict generator: {e}")
         raise
 
+
+def run_turbProp_generator(turbulence_prop_path):
+    """
+    Runs the turbulence generator script.
+    """
+
+    try:
+        subprocess.run(
+            [
+                "python", turbulence_prop_path
+            ],
+            check=True
+        )
+    except subprocess.CalledProcessError as e:
+        print(f"Error while running turbulenceProperties generator: {e}")
+        raise
+
+
+def run_tranProp_generator(transport_prop_path):
+    """
+    Runs the transportProperties generator script.
+    """
+
+    try:
+        subprocess.run(
+            [
+                "python", transport_prop_path
+            ],
+            check=True
+        )
+    except subprocess.CalledProcessError as e:
+        print(f"Error while running transportProperties generator: {e}")
+        raise
 
 
 if __name__ == "__main__":
