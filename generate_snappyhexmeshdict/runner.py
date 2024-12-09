@@ -107,82 +107,89 @@ geometry
 
 def generate_ref_reg(nturb):
     """Called by generate_castellated_mesh. Creates refinement region subsection"""
-    refinement_regions = "\nrefinementRegions\n"
+    refinement_regions = """
+    refinementRegions
+    {"""
+
     for i in range(nturb):
         refinement_regions += f"""
-    AMI_{i}
-    {{
-        mode inside;
-        levels((1E15 4));
-    }}
-    """
+        AMI_{i}
+        {{
+            mode inside;
+            levels((1E15 4));
+        }}
 
-        refinement_regions += f"""      LeadingEdge_{i}.stl
-    {{
-        mode inside;
-        levels (1 5);
-    }}
-    """
+        LeadingEdge_{i}.stl
+        {{
+            mode inside;
+            levels (1 5);
+        }}
 
-        refinement_regions += f"""      TipTrailingEdge_{i}.stl
-    {{
-        mode inside;
-        levels (1 9);
-    }}
-    """
+        TipTrailingEdge_{i}.stl
+        {{
+            mode inside;
+            levels (1 9);
+        }}
 
-        refinement_regions += f"""      Turb_WakeRefinement_{i}
-    {{
-        mode inside;
-        levels (1 4);
-    }}
-    """
-
-        refinement_regions += f"""      BladeWakeRefinement_{i}
-    {{
-        mode inside;
-        levels (1 4);
-    }}    
+       Turb_WakeRefinement_{i}
+        {{
+            mode inside;
+            levels (1 4);
+        }}
+        
+        BladeWakeRefinement_{i}
+        {{
+            mode inside;
+            levels (1 4);
+        }}
         """
+    refinement_regions += """
+    }"""
+
     return refinement_regions
 
 
 def generate_ref_surf(nturb, dx, dy):
     """Called by generate_castellated_mesh. Creates refinement surfaces subsection"""
 
-    refinement_surfaces = "\nrefinementSurfaces\n"
+    refinement_surfaces = """
+    refinementSurfaces
+    {"""
 
     for i in range(nturb):
         refinement_surfaces += f"""
 
-    AMI_{i}
-    {{
-        level (1 5);
-    
-        faceType boundary;
-        cellZone turbine_{i};
-        faceZone turbine_{i};
-        cellZoneInside insidePoint;
-        insidePoint ({dx*(i)} {-0.25+dy*(i)} -0.18);
-    }}
-    """
+        AMI_{i}
+        {{
+            level (1 5);
+        
+            faceType boundary;
+            cellZone turbine_{i};
+            faceZone turbine_{i};
+            cellZoneInside insidePoint;
+            insidePoint ({dx*(i)} {-0.25+dy*(i)} -0.18);
+        }}
+        """
         refinement_surfaces += f"""
-    BladesAndHub_{i}
-    {{
-        level (8 8);
-    }}
+        BladesAndHub_{i}
+        {{
+            level (8 8);
+        }}
 
     """
+    refinement_surfaces += """
+    }"""
     return refinement_surfaces
 
 
 def generate_features(nturb):
     """Generate Explicit feature edge refinement"""
-    features = "features"
+    features = """
+    features
+    ("""
 
     for i in range(nturb):
         features += f"""
-    (
         {{
             file "BladesAndHub_{i}.eMesh";
             level 4;
@@ -202,6 +209,9 @@ def generate_features(nturb):
             file "HubRefinement_{i}.eMesh";
             level 6;
         }}
+"""
+
+    features += """
     )"""
 
     return features
@@ -214,6 +224,9 @@ def generate_castellated_mesh(nturb, dx, dy):
     castellated_mesh = ""
 
     castellated_mesh += """
+
+castellatedMeshControls
+{    
     maxLocalCells 10000000;
     maxGlobalCells 40000000;
     minRefinementCells 10;
@@ -230,36 +243,41 @@ def generate_castellated_mesh(nturb, dx, dy):
     castellated_mesh += "\n"
     castellated_mesh += generate_features(nturb)
 
+    castellated_mesh += """
+}
+"""
     return castellated_mesh
 
 
 def generate_snap_controls():
     """generate snap control section of snappyHexMeshDict"""
-    snap_controls = "snapControls\n"
-    snap_controls += "{\n"
-    snap_controls += "  nSmoothPatch 2;\n"
-    snap_controls += "  nSmoothInternal 30;\n"
-    snap_controls += "  tolerance 5.0;\n"
-    snap_controls += "  nSolveIter 400;\n"
-    snap_controls += "  nRelaxIter 10;\n"
-    snap_controls += "  nFeatureSnapIter 25;\n"
-    snap_controls += "  implicitFeatureSnap false;\n"
-    snap_controls += "  explicitFeatureSnap true;\n"
-    snap_controls += "  multiRegionFeatureSnap true;\n"
-    snap_controls += "}\n"
+    snap_controls = """
+snapControls
+{
+    nSmoothPatch 2;
+    nSmoothInternal 30;
+    tolerance 5.0;
+    nSolveIter 400;
+    nRelaxIter 10;
+    nFeatureSnapIter 25;
+    implicitFeatureSnap false;
+    explicitFeatureSnap true;
+    multiRegionFeatureSnap true;
+}"""
 
     return snap_controls
 
 
 def generate_addLayers(nturb):
     """Generate AddLayersControls section of SnappyHexMeshDict"""
-    addLayers = "addLayersControls\n"
-    addLayers += "{\n"
-    addLayers += """    
+    addLayers = """
+    
+addLayersControls
+{    
     relativeSizes false;
     layers
     {
-    """
+"""
 
     for i in range(nturb):
         addLayers += f"""
@@ -273,7 +291,9 @@ def generate_addLayers(nturb):
         }}
         """
 
-    addLayers += f"""
+    addLayers += """
+    }
+    
     expansionRatio 1.2;
     firstLayerThickness 0.0001;
     minThickness 0;
@@ -292,6 +312,7 @@ def generate_addLayers(nturb):
     concaveAngle 180;
     nBufferCellsNoExtrude 0;
     nLayerIter 60;
+}
 """
 
     return addLayers
