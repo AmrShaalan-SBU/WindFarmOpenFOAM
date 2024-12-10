@@ -64,13 +64,15 @@ writeObj yes;"""
 
 
     # Write to file
-    os.makedirs(f"{output_folder}/system", exist_ok=True)
-    output_path = f"{output_folder}/system/surfaceFeatureExtractDict"
-    with open(output_path, "w") as f:
+    output_folder += "/system/"
+    os.makedirs(output_folder, exist_ok=True)
+    output_file = os.path.join(output_folder, "surfaceFeatureExtractDict")
+    with open(output_file, "w") as f:
         f.write(features)
 
+    print(f"(I) surfaceFeatureExtractDict created at: {output_file}")
 
-    print("(I) surfaceFeatureExtractDict generated successfully")
+
 
     features_default = """
 extractionMethod    extractFromSurface;
@@ -83,10 +85,15 @@ trimFeatures
 
 """
     # Write to file
-    os.makedirs(f"{output_folder}/system", exist_ok=True)
-    output_path = f"{output_folder}/system/surfaceFeatureExtractDictDefaults"
-    with open(output_path, "w") as f:
+    output_folder += "/system/"
+    os.makedirs(output_folder, exist_ok=True)
+    output_file = os.path.join(output_folder, "surfaceFeatureExtractDictDefaults")
+    with open(output_file, "w") as f:
         f.write(features_default)
+
+    print(f"(I) surfaceFeatureExtractDictDefaults created at: {output_file}")
+
+
 
 def main():
     args = get_options()

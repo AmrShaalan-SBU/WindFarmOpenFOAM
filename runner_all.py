@@ -41,6 +41,10 @@ def main():
     if not os.path.exists(generate_surf_feat_ext_script):
         raise FileNotFoundError(f"Script {generate_surf_feat_ext_script} not found. Ensure it exists in the same directory.")
 
+    generate_fvFiles_script = os.path.join(os.path.dirname(__file__), "generate_fvFiles/runner.py")
+    if not os.path.exists(generate_fvFiles_script):
+        raise FileNotFoundError(f"Script {generate_fvFiles_script} not found. Ensure it exists in the same directory.")
+
     # Ensure runfolder exists
     os.makedirs("runfolder", exist_ok=True)
 
@@ -57,27 +61,18 @@ def main():
         run_preparing_geometry(geometry_script=prepare_geometryScript, nturb=nturb, dx=dx, dy=dy, diameter=diameter)
     except:
         raise Exception("ERROR: run_prepare_geometry Failed")
-    else:
-        print("(I) run_prepare_geometry ran successfully")
-
 
     # running blockmeshdict
     try:
         run_blockMeshDict_generator(blockmesh_script=generate_blockmeshdictScript, nturb=nturb, dx=dx, dy=dy, diameter=diameter, max_cells=max_cells)
     except:
         raise Exception("ERROR: run_blockmeshdict Failed")
-    else:
-        print("(I) run_blockmeshdict ran successfully")
-
 
     # running decomposepardict
     try:
         run_decomposePar_generator(decomposePar_script=generate_decomposepardictScript, n_subdomains=n_subdomains)
     except:
         raise Exception("ERROR: run_decomposepardict Failed")
-    else:
-        print("(I) run_decomposepardict ran successfully")
-
 
     # running snappyhexmeshdict
     try:
@@ -115,7 +110,12 @@ def main():
     except:
         raise Exception("ERROR: run_surf_feat_ext Failed")
 
-    print("(I) Setup completed successfully.")
+    # running fvFiles
+    try:
+        run_fvFiles_generator(fvFiles_path=generate_fvFiles_script)
+    except:
+        raise Exception("ERROR: run_fvFiles Failed")
+
 
 def run_dynamicmeshdict_generator(dynamicmesh_path, nturb, dx, dy, rps):
     """
@@ -311,6 +311,21 @@ def run_surf_feat_ext_generator(surf_feat_ext_path, nturb):
         print(f"Error while running surfaceFeatureExtractDict generator: {e}")
         raise
 
+def run_fvFiles_generator(fvFiles_path):
+    """
+    Runs the transportProperties generator script.
+    """
+
+    try:
+        subprocess.run(
+            [
+                "python", fvFiles_path
+            ],
+            check=True
+        )
+    except subprocess.CalledProcessError as e:
+        print(f"Error while running fvFiles generator: {e}")
+        raise
 
 if __name__ == "__main__":
     main()

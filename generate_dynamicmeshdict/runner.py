@@ -41,6 +41,10 @@ def generate_dynamicmeshdict(nturb, dx, dy, rps, output_folder):
 
     dynamicmeshdict = get_header_string("dynamicMeshDict")
 
+    output_folder += "/constant/"
+    os.makedirs(output_folder, exist_ok=True)
+    output_file = os.path.join(output_folder, "dynamicMeshDict")
+
     dynamicmeshdict += """
 dynamicFvMesh dynamicMotionSolverFvMesh;
 motionSolverLibs (fvMotionSolvers);
@@ -64,12 +68,12 @@ multiSolidBodyMotionSolverCoeffs
     dynamicmeshdict += "}\n"
 
     # Write to file
-    os.makedirs(output_folder+"/constant", exist_ok=True)
+    os.makedirs(output_folder, exist_ok=True)
 
-    with open(output_folder+"/constant/dynamicMeshDict", "w") as f:
+    with open(output_file, "w") as f:
         f.write(dynamicmeshdict)
 
-    print("(I) dynamicMeshDict generated successfully.")
+    print(f"(I) dynamicMeshDict created at: {output_file}")
 
 def main():
     args = get_options()

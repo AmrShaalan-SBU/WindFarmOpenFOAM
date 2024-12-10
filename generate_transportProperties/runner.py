@@ -6,7 +6,7 @@ def get_options():
     Parse command-line arguments.
     """
     parser = argparse.ArgumentParser(description="Generate transport properties for parallel meshing.")
-    parser.add_argument("--output_folder", type=str, default="runfolder/", help="Folder to save transport properties.")
+    parser.add_argument("--output_folder", type=str, default="runfolder", help="Folder to save transport properties.")
     return parser.parse_args()
 
 
@@ -36,7 +36,7 @@ def generate_tran_prop(output_folder):
     """
     Generates transport properties dict
     """
-    output_folder += "constant/"
+    output_folder += "/constant/"
     os.makedirs(output_folder, exist_ok=True)
     output_file = os.path.join(output_folder, "transportProperties")
 

@@ -378,12 +378,13 @@ def generate_snappy_hex_mesh_dict(nturb, dx, dy, diameter, output_folder):
 """
 
     # Write to file
-    os.makedirs(f"{output_folder}/system", exist_ok=True)
-    output_path = f"{output_folder}/system/snappyHexMeshDict"
-    with open(output_path, "w") as f:
+    output_folder += "/system/"
+    os.makedirs(output_folder, exist_ok=True)
+    output_file = os.path.join(output_folder, "snappyHexMeshDict")
+    with open(output_file, "w") as f:
         f.write(snappyHexMeshDict)
 
-    print("(I) snappyHexMeshDict generated successfully")
+    print(f"(I) snappyHexMeshDict created at: {output_file}")
 
 
 def main():

@@ -82,12 +82,15 @@ patches
 """
 
     # Write to file
-    os.makedirs(output_folder+"/system", exist_ok=True)
+    output_folder += "/system/"
+    os.makedirs(output_folder, exist_ok=True)
 
-    with open(output_folder+"/system/createPatchDict", "w") as f:
+    output_file = os.path.join(output_folder, "createPatchDict")
+
+    with open(output_file, "w") as f:
         f.write(createpatchdict)
 
-    print("(I) createPatchDict generated successfully.")
+    print(f"(I) createPatch created at: {output_file}")
 
 def main():
     args = get_options()

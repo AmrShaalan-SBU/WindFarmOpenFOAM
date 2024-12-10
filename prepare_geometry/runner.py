@@ -46,7 +46,7 @@ def copy_stls(stl_folder, output_folder, nturb, dx, dy, diameter):
                     else:
                         outfile.write(line)
 
-    print(f"STL files copied and adjusted for {nturb} turbines in {output_folder}.")
+    print(f"(I) STL files copied and adjusted for {nturb} turbines in {output_folder}.")
 
 
 def get_options():

@@ -36,7 +36,7 @@ FoamFile
     return header_string
 
 
-def generate_blockMeshDict(nturb, dx, dy, diameter, max_cells):
+def generate_blockMeshDict(nturb, dx, dy, diameter, max_cells, output_folder):
     """Generates a blockMeshDict with uniform cubic cells."""
     D = diameter
     upwind_length = 5 * D
@@ -57,6 +57,11 @@ def generate_blockMeshDict(nturb, dx, dy, diameter, max_cells):
     nz = round(height / cell_size)
 
     print(f"    (II) Cell size: {cell_size:.3f}m, Resolutions: nx={nx}, ny={ny}, nz={nz}")
+
+    output_folder += "/system/"
+    os.makedirs(output_folder, exist_ok=True)
+    output_file = os.path.join(output_folder, "blockMesh")
+
 
     # Define vertices
     vertices = [
@@ -138,12 +143,13 @@ boundary
 """
 
     # Write to file
-    os.makedirs("runfolder/system", exist_ok=True)
+    os.makedirs(output_folder, exist_ok=True)
 
-    with open("runfolder/system/blockMeshDict", "w") as f:
+    with open(output_file, "w") as f:
         f.write(blockMeshDict)
 
-    print("(I) blockMeshDict generated successfully.")
+    print(f"(I) blockMesh created at: {output_file}")
+
 
 def main():
     args = get_options()
@@ -155,6 +161,7 @@ def main():
         dy=args.dy,
         diameter=args.diameter,
         max_cells=args.max_cells,
+        output_folder=args.output_folder
     )
 
 
