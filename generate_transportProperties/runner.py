@@ -46,7 +46,7 @@ def generate_tran_prop(output_folder):
 
 transportModel  Newtonian;
 
-nu              nu [ 0 2 -1 0 0 0 0 ] 1.516e-05;	//water at 30C
+nu              nu [ 0 2 -1 0 0 0 0 ] 1.516e-05;
 
 // ************************************************************************* //
 

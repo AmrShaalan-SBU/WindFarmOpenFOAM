@@ -33,6 +33,9 @@ def main():
     if not os.path.exists(generate_tranPropScript):
         raise FileNotFoundError(f"Script {generate_tranPropScript} not found. Ensure it exists in the same directory.")
 
+    generate_createpatchScript = os.path.join(os.path.dirname(__file__), "generate_createpatchdict/runner.py")
+    if not os.path.exists(generate_createpatchScript):
+        raise FileNotFoundError(f"Script {generate_createpatchScript} not found. Ensure it exists in the same directory.")
 
     # Ensure runfolder exists
     os.makedirs("runfolder", exist_ok=True)
@@ -106,6 +109,14 @@ def main():
     else:
         print("(I) run_tranProp_generator ran successfully")
 
+    # running createPatch
+    try:
+        run_createpatch_generator(createpatch_path=generate_createpatchScript, nturb=nturb)
+    except:
+        raise Exception("ERROR: run_createpatch Failed")
+    else:
+        print("(I) run_createpatch ran successfully")
+
 
 def run_dynamicmeshdict_generator(dynamicmesh_path, nturb, dx, dy, rps):
     """
@@ -172,6 +183,7 @@ def run_preparing_geometry(geometry_script, nturb, dx, dy, diameter):
     except subprocess.CalledProcessError as e:
         print(f"Error while running prepare_geometry: {e}")
         raise
+
 
 def run_blockMeshDict_generator(blockmesh_script, nturb, dx, dy, diameter, max_cells):
     """
@@ -260,6 +272,25 @@ def run_tranProp_generator(transport_prop_path):
         )
     except subprocess.CalledProcessError as e:
         print(f"Error while running transportProperties generator: {e}")
+        raise
+
+
+def run_createpatch_generator(createpatch_path, nturb):
+    """
+    Runs the transportProperties generator script.
+    """
+
+    try:
+        subprocess.run(
+            [
+                "python", createpatch_path,
+                "--nturb", str(nturb)
+            ],
+            check=True
+        )
+
+    except subprocess.CalledProcessError as e:
+        print(f"Error while running createPatchDict generator: {e}")
         raise
 
 
