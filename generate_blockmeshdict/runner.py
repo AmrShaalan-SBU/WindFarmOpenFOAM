@@ -56,7 +56,7 @@ def generate_blockMeshDict(nturb, dx, dy, diameter, max_cells):
     ny = round(domain_length / cell_size)
     nz = round(height / cell_size)
 
-    print(f"(II) Cell size: {cell_size:.3f}m, Resolutions: nx={nx}, ny={ny}, nz={nz}")
+    print(f"    (II) Cell size: {cell_size:.3f}m, Resolutions: nx={nx}, ny={ny}, nz={nz}")
 
     # Define vertices
     vertices = [

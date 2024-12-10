@@ -33,67 +33,66 @@ FoamFile
     return header_string
 
 
-def generate_createpatchdict(nturb, output_folder):
-    """Generates createpatchdict"""
+def generate_surf_feat_ext_dict(nturb, output_folder):
+    """Generate surfaceFeatureExtractDict for a multi-turbine setup."""
+    features = get_header_string("surfaceFeatureExtractDict")
 
-    createpatchdict = get_header_string("createPatchDict")
-
-    createpatchdict += """
-pointSync false;
-
-patches
-{
-"""
     for i in range(nturb):
-        createpatchdict += f"""
-    {{
-        //- Master side patch
-        name            AMI_turb{i}_1;
-        patchInfo
-        {{
-            type            cyclicAMI;
-            matchTolerance  0.1;
-            neighbourPatch  AMI_turb{i}_2;
-            transform       noOrdering;
-	    lowWeightCorrection 0.05;
-        }}
-        constructFrom patches;
-        patches (AMI_{i});
-    }}
+        features += f"""
+BladesAndHub_{i}.stl
+{{
+    #include "surfaceFeatureExtractDictDefaults"
+}}
+AMI_Refinement_Additional{i}.stl
+{{
+    #include "surfaceFeatureExtractDictDefaults"
+}}
+Features_{i}.stl
+{{
+    #include "surfaceFeatureExtractDictDefaults"
+}}
+HubRefinement_{i}.stl
+{{
+    #include "surfaceFeatureExtractDictDefaults"
+}}
+    """
 
-    {{
-        //- Slave side patch
-        name            AMI_turb{i}_2;
-        patchInfo
-        {{
-            type            cyclicAMI;
-            matchTolerance  0.1;
-            neighbourPatch  AMI_turb{i}_1;
-            transform       noOrdering;
-	    lowWeightCorrection 0.05;
-        }}
-        constructFrom patches;
-        patches (AMI_{i}_slave);
-    }}
+    features += """
+writeObj yes;"""
 
-"""
-    createpatchdict += """
-}
-"""
+
+
 
     # Write to file
-    os.makedirs(output_folder+"/system", exist_ok=True)
+    os.makedirs(f"{output_folder}/system", exist_ok=True)
+    output_path = f"{output_folder}/system/surfaceFeatureExtractDict"
+    with open(output_path, "w") as f:
+        f.write(features)
 
-    with open(output_folder+"/system/createPatchDict", "w") as f:
-        f.write(createpatchdict)
 
-    print("(I) createPatchDict generated successfully.")
+    print("(I) surfaceFeatureExtractDict generated successfully")
+
+    features_default = """
+extractionMethod    extractFromSurface;
+includedAngle       150;
+
+trimFeatures
+{
+    minElem         10;
+}
+
+"""
+    # Write to file
+    os.makedirs(f"{output_folder}/system", exist_ok=True)
+    output_path = f"{output_folder}/system/surfaceFeatureExtractDictDefaults"
+    with open(output_path, "w") as f:
+        f.write(features_default)
 
 def main():
     args = get_options()
 
-    # Generate dynamicMeshDict
-    generate_createpatchdict(
+    # Generate snappyHexMeshDict
+    generate_surf_feat_ext_dict(
         nturb=args.nturb,
         output_folder=args.output_folder
     )

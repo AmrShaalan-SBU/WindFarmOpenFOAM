@@ -37,6 +37,10 @@ def main():
     if not os.path.exists(generate_createpatchScript):
         raise FileNotFoundError(f"Script {generate_createpatchScript} not found. Ensure it exists in the same directory.")
 
+    generate_surf_feat_ext_script = os.path.join(os.path.dirname(__file__), "generate_feature_extract/runner.py")
+    if not os.path.exists(generate_surf_feat_ext_script):
+        raise FileNotFoundError(f"Script {generate_surf_feat_ext_script} not found. Ensure it exists in the same directory.")
+
     # Ensure runfolder exists
     os.makedirs("runfolder", exist_ok=True)
 
@@ -80,43 +84,38 @@ def main():
         run_snappyHexMeshDict_generator(snappyhex_path=generate_snappyHexMeshDictScript, nturb=nturb, dx=dx, dy=dy, diameter=diameter)
     except:
         raise Exception("ERROR: run_snappyhexmesh Failed")
-    else:
-        print("(I) run_snappyhexmesh ran successfully")
-
-    print("(I) Setup completed successfully.")
 
     # running dynamicMeshDict
     try:
         run_dynamicmeshdict_generator(dynamicmesh_path=generate_dynamicmeshdictScript, nturb=nturb, dx=dx, dy=dy, rps=rps)
     except:
         raise Exception("ERROR: run_dynamicmeshdict Failed")
-    else:
-        print("(I) run_dynamicmeshdict ran successfully")
 
     # running turbProp
     try:
         run_turbProp_generator(turbulence_prop_path=generate_turbPropScript)
     except:
         raise Exception("ERROR: run_turb_prop Failed")
-    else:
-        print("(I) run_turbProp_generator ran successfully")
 
     # running tranProp
     try:
         run_tranProp_generator(transport_prop_path=generate_tranPropScript)
     except:
         raise Exception("ERROR: run_tran_prop Failed")
-    else:
-        print("(I) run_tranProp_generator ran successfully")
 
     # running createPatch
     try:
         run_createpatch_generator(createpatch_path=generate_createpatchScript, nturb=nturb)
     except:
         raise Exception("ERROR: run_createpatch Failed")
-    else:
-        print("(I) run_createpatch ran successfully")
 
+    # running surfaceFeatureExtract
+    try:
+        run_surf_feat_ext_generator(surf_feat_ext_path=generate_surf_feat_ext_script, nturb=nturb)
+    except:
+        raise Exception("ERROR: run_surf_feat_ext Failed")
+
+    print("(I) Setup completed successfully.")
 
 def run_dynamicmeshdict_generator(dynamicmesh_path, nturb, dx, dy, rps):
     """
@@ -291,6 +290,25 @@ def run_createpatch_generator(createpatch_path, nturb):
 
     except subprocess.CalledProcessError as e:
         print(f"Error while running createPatchDict generator: {e}")
+        raise
+
+
+def run_surf_feat_ext_generator(surf_feat_ext_path, nturb):
+    """
+    Runs the surfaceFeatureExtractDict generator script.
+    """
+
+    try:
+        subprocess.run(
+            [
+                "python", surf_feat_ext_path,
+                "--nturb", str(nturb)
+            ],
+            check=True
+        )
+
+    except subprocess.CalledProcessError as e:
+        print(f"Error while running surfaceFeatureExtractDict generator: {e}")
         raise
 
 
