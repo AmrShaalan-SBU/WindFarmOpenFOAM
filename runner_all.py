@@ -45,6 +45,11 @@ def main():
     if not os.path.exists(generate_fvFiles_script):
         raise FileNotFoundError(f"Script {generate_fvFiles_script} not found. Ensure it exists in the same directory.")
 
+    generate_bc_script = os.path.join(os.path.dirname(__file__), "generate_bc/runner.py")
+    if not os.path.exists(generate_bc_script):
+        raise FileNotFoundError(f"Script {generate_bc_script} not found. Ensure it exists in the same directory.")
+
+
     # Ensure runfolder exists
     os.makedirs("runfolder", exist_ok=True)
 
@@ -55,6 +60,11 @@ def main():
     max_cells = 120
     n_subdomains = 95
     rps = 15.96
+    vel = 1.498
+    p = 0
+    omega = 0.1
+    k = 0.06
+    nut = 0
 
     # running prepare geometry
     try:
@@ -115,6 +125,12 @@ def main():
         run_fvFiles_generator(fvFiles_path=generate_fvFiles_script)
     except:
         raise Exception("ERROR: run_fvFiles Failed")
+
+    # running fvFiles
+    try:
+        run_bc_generator(bc_path=generate_bc_script, nturb=nturb, vel=vel, p=p, omega=omega, k=k, nut=nut)
+    except:
+        raise Exception("ERROR: run_bc Failed")
 
 
 def run_dynamicmeshdict_generator(dynamicmesh_path, nturb, dx, dy, rps):
@@ -327,5 +343,57 @@ def run_fvFiles_generator(fvFiles_path):
         print(f"Error while running fvFiles generator: {e}")
         raise
 
+
+def run_bc_generator(bc_path, nturb, vel, p, omega, k, nut):
+    """
+    Runs the surfaceFeatureExtractDict generator script.
+    """
+
+    try:
+        subprocess.run(
+            [
+                "python", bc_path,
+                "--nturb", str(nturb),
+                "--vel", str(vel),
+                "--p", str(p),
+                "--omega", str(omega),
+                "--k", str(k),
+                "--nut", str(nut)
+            ],
+            check=True
+        )
+
+    except subprocess.CalledProcessError as e:
+        print(f"Error while running bc generator: {e}")
+        raise
+
+
+def print_v(height):
+    """Prints a V sign of the specified height."""
+    for i in range(height):
+        # Left part of the V
+        left = " " * i + "*"
+        # Right part of the V
+        right = " " * (2 * (height - i - 1)) + "*" if i != height - 1 else ""
+        # Combine and print
+        print(left + right)
+
+
 if __name__ == "__main__":
     main()
+    print("\nMAY THE NUMERICS BE WITH YOU =)")
+    print("""
+         ."".    ."",
+         |  |   /  /
+         |  |  /  /
+         |  | /  /
+         |  |/  ;-._
+         }  ` _/  / ;
+         |  /` ) /  /
+         | /  /_/\\_/\\
+         |/  /      |
+         (  ' \\ '-  |
+          \\    `.  /
+           |      |
+           |      |
+    """)

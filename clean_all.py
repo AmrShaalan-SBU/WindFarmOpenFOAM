@@ -12,11 +12,11 @@ def main():
             # Remove the directory and recreate it empty
             shutil.rmtree(runfolder_path)
             os.makedirs(runfolder_path, exist_ok=True)
-            print(f"All contents of '{runfolder_path}' have been deleted.")
+            print(f"All contents of '{runfolder_path}' have been deleted.\n \n")
         else:
-            print("Operation canceled. No files were deleted.")
+            print("Operation canceled. No files were deleted.\n \n")
     else:
-        print(f"Directory '{runfolder_path}' does not exist. Nothing to clean.")
+        print(f"Directory '{runfolder_path}' does not exist. Nothing to clean.\n \n")
 
 
 if __name__ == "__main__":
