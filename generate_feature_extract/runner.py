@@ -43,7 +43,7 @@ BladesAndHub_{i}.stl
 {{
     #include "surfaceFeatureExtractDictDefaults"
 }}
-AMI_Refinement_Additional{i}.stl
+AMI_Refinement_Additional_{i}.stl
 {{
     #include "surfaceFeatureExtractDictDefaults"
 }}
@@ -85,7 +85,6 @@ trimFeatures
 
 """
     # Write to file
-    output_folder += "/system/"
     os.makedirs(output_folder, exist_ok=True)
     output_file = os.path.join(output_folder, "surfaceFeatureExtractDictDefaults")
     with open(output_file, "w") as f:

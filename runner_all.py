@@ -49,18 +49,22 @@ def main():
     if not os.path.exists(generate_bc_script):
         raise FileNotFoundError(f"Script {generate_bc_script} not found. Ensure it exists in the same directory.")
 
+    generate_controldict_script = os.path.join(os.path.dirname(__file__), "generate_controldict/runner.py")
+    if not os.path.exists(generate_controldict_script):
+        raise FileNotFoundError(f"Script {generate_controldict_script} not found. Ensure it exists in the same directory.")
+
 
     # Ensure runfolder exists
     os.makedirs("runfolder", exist_ok=True)
 
-    nturb = 3
-    dx = 7
-    dy = 7
+    nturb = 2
+    dx = 6.5
+    dy = 0
     diameter = 1.46
     max_cells = 120
-    n_subdomains = 95
-    rps = 15.96
-    vel = 1.498
+    n_subdomains = 10
+    rps = 13.3
+    vel = 1.94
     p = 0
     omega = 0.1
     k = 0.06
@@ -126,11 +130,18 @@ def main():
     except:
         raise Exception("ERROR: run_fvFiles Failed")
 
-    # running fvFiles
+    # running bc
     try:
         run_bc_generator(bc_path=generate_bc_script, nturb=nturb, vel=vel, p=p, omega=omega, k=k, nut=nut)
     except:
         raise Exception("ERROR: run_bc Failed")
+
+    # running controlDict
+    try:
+        run_controldict_generator(controldict_path=generate_controldict_script)
+    except:
+        raise Exception("ERROR: run_controldict Failed")
+
 
 
 def run_dynamicmeshdict_generator(dynamicmesh_path, nturb, dx, dy, rps):
@@ -366,6 +377,24 @@ def run_bc_generator(bc_path, nturb, vel, p, omega, k, nut):
     except subprocess.CalledProcessError as e:
         print(f"Error while running bc generator: {e}")
         raise
+
+
+def run_controldict_generator(controldict_path):
+    """
+    Runs the controlDict generator script.
+    """
+
+    try:
+        subprocess.run(
+            [
+                "python", controldict_path
+            ],
+            check=True
+        )
+    except subprocess.CalledProcessError as e:
+        print(f"Error while running fvFiles generator: {e}")
+        raise
+
 
 
 def print_v(height):

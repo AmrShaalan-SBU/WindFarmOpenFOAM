@@ -15,7 +15,7 @@ FoamFile
     version     2.0;
     format      binary;
     arch        "LSB;label=32;scalar=64";
-    class       volVectorField;
+    class       volScalarField;
     location    "0";
     object      {dictName};
 }}
@@ -32,7 +32,7 @@ def generate_k(nturb, output_folder, k):
     bc = get_header_string("k")
 
     bc += f"""
-dimensions      [0 0 -1 0 0 0 0];
+dimensions      [0 2 -2 0 0 0 0];
 internalField   uniform {k};
 
 boundaryField

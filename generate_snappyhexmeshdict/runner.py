@@ -41,7 +41,7 @@ def get_snappy_preamble():
     preamble_string = """castellatedMesh true;
 snap true;
 addLayers true;
-mergeTolerance 1e-6
+mergeTolerance 1e-6;
 """
 
     return preamble_string
@@ -116,31 +116,31 @@ def generate_ref_reg(nturb):
         AMI_{i}
         {{
             mode inside;
-            levels((1E15 4));
+            levels ((1 4));
         }}
 
         LeadingEdge_{i}.stl
         {{
             mode inside;
-            levels (1 5);
+            levels ((1 5));
         }}
 
         TipTrailingEdge_{i}.stl
         {{
             mode inside;
-            levels (1 9);
+            levels ((1 9));
         }}
 
        Turb_WakeRefinement_{i}
         {{
             mode inside;
-            levels (1 4);
+            levels ((1 4));
         }}
         
         BladeWakeRefinement_{i}
         {{
             mode inside;
-            levels (1 4);
+            levels ((1 4));
         }}
         """
     refinement_regions += """
@@ -196,7 +196,7 @@ def generate_features(nturb):
         }}
         
         {{
-            file "AMI_Refinement_Additional{i}.eMesh";
+            file "AMI_Refinement_Additional_{i}.eMesh";
             level 4;
         }}
         
@@ -212,7 +212,7 @@ def generate_features(nturb):
 """
 
     features += """
-    )"""
+    );"""
 
     return features
 

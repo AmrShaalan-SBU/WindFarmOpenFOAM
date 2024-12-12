@@ -15,7 +15,7 @@ FoamFile
     version     2.0;
     format      binary;
     arch        "LSB;label=32;scalar=64";
-    class       volVectorField;
+    class       volScalarField;
     location    "0";
     object      {dictName};
 }}

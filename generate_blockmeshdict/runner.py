@@ -60,7 +60,7 @@ def generate_blockMeshDict(nturb, dx, dy, diameter, max_cells, output_folder):
 
     output_folder += "/system/"
     os.makedirs(output_folder, exist_ok=True)
-    output_file = os.path.join(output_folder, "blockMesh")
+    output_file = os.path.join(output_folder, "blockMeshDict")
 
 
     # Define vertices
@@ -121,20 +121,13 @@ boundary
             (3 7 6 2)
         );
     }}
-    sides
+    boundaries
     {{
-        type patch;
+        type symmetry;
         faces
         (
             (1 2 6 5)
             (0 4 7 3)
-        );
-    }}
-    topAndBottom
-    {{
-        type patch;
-        faces
-        (
             (4 5 6 7)
             (0 1 2 3)
         );
