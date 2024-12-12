@@ -68,7 +68,11 @@ geometry
         type triSurfaceMesh;
         name BladesAndHub_{i};
     }}
-        LeadingEdge_{i}.stl
+    BladeWakeRefinement_{i}.stl
+    {{
+        type triSurfaceMesh;
+    }}
+    LeadingEdge_{i}.stl
     {{
         type triSurfaceMesh;
     }}
@@ -137,7 +141,7 @@ def generate_ref_reg(nturb):
             levels ((1 4));
         }}
         
-        BladeWakeRefinement_{i}
+        BladeWakeRefinement_{i}.stl
         {{
             mode inside;
             levels ((1 4));
@@ -300,7 +304,7 @@ addLayersControls
     nGrow 0;
     featureAngle 180;
     mergePatchFacesangle 60;
-    maxFacethicknessRatio 50;
+    maxFaceThicknessRatio 50;
     slipFeatureAngle 30;
     layerTerminationAngle -180;
     nRelaxIter 20;
