@@ -61,7 +61,7 @@ def main():
     dx = 6.5
     dy = 0
     diameter = 1.46
-    max_cells = 120
+    max_cells = 135
     n_subdomains = 10
     rps = 13.3
     vel = 1.94

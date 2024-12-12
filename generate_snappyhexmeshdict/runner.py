@@ -66,7 +66,7 @@ geometry
     BladesAndHub_{i}.stl
     {{
         type triSurfaceMesh;
-        name Turbine{i}_Surface;
+        name BladesAndHub_{i};
     }}
         LeadingEdge_{i}.stl
     {{
