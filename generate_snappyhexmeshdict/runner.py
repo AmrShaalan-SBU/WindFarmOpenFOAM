@@ -99,8 +99,8 @@ geometry
     Turb_WakeRefinement_{i}
     {{
         type searchableCylinder;
-        point1 ({dx*(i)} {dy*(i)} 0);
-        point2 ({dx*(i)} {dy*(i) + 10*D} 0.5);
+        point1 ({dx*(i)*D} {dy*(i)*D} 0);
+        point2 ({dx*(i)*D} {dy*(i)*D + 6.5*D} 0.0);
         radius {1.2*D/2};
     }}
     """
@@ -153,7 +153,7 @@ def generate_ref_reg(nturb):
     return refinement_regions
 
 
-def generate_ref_surf(nturb, dx, dy):
+def generate_ref_surf(nturb, dx, dy, D):
     """Called by generate_castellated_mesh. Creates refinement surfaces subsection"""
 
     refinement_surfaces = """
@@ -171,7 +171,7 @@ def generate_ref_surf(nturb, dx, dy):
             cellZone turbine_{i};
             faceZone turbine_{i};
             cellZoneInside insidePoint;
-            insidePoint ({dx*(i)} {-0.25+dy*(i)} -0.18);
+            insidePoint ({dx*(i)*D} {-0.25+dy*D*(i)} -0.18);
         }}
         """
         refinement_surfaces += f"""
@@ -221,7 +221,7 @@ def generate_features(nturb):
     return features
 
 
-def generate_castellated_mesh(nturb, dx, dy):
+def generate_castellated_mesh(nturb, dx, dy, D):
     """Generate casteallted mesh section: surface refinement and region refinement"""
 
     # Refinement Parameters
@@ -237,11 +237,11 @@ castellatedMeshControls
     maxLoadUnbalance 0.1;
     nCellsBetweenLevels 3;
     resolveFeatureAngle 20;
-    locationInMesh (5 10 0);
+    locationInMesh (2 10 0);
     allowFreeStandingZoneFaces true;
     """
 
-    castellated_mesh += generate_ref_surf(nturb, dx, dy)
+    castellated_mesh += generate_ref_surf(nturb, dx, dy, D)
     castellated_mesh += "\n"
     castellated_mesh += generate_ref_reg(nturb)
     castellated_mesh += "\n"
@@ -366,7 +366,7 @@ def generate_snappy_hex_mesh_dict(nturb, dx, dy, diameter, output_folder):
 
     snappyHexMeshDict += generate_snappy_geometry(nturb=nturb, dx=dx, dy=dy, D=D)
 
-    snappyHexMeshDict += generate_castellated_mesh(nturb=nturb, dx=dx, dy=dy)
+    snappyHexMeshDict += generate_castellated_mesh(nturb=nturb, dx=dx, dy=dy, D=D)
 
     snappyHexMeshDict += generate_snap_controls()
 

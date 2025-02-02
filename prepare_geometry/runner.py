@@ -22,8 +22,8 @@ def copy_stls(stl_folder, output_folder, nturb, dx, dy, diameter):
     os.makedirs(output_folder, exist_ok=True)
 
     for i in range(nturb):
-        x_offset = (i % 2) * dy * D  # Alternate turbines in crosswind direction
-        y_offset = i * dx * D       # Spacing in downstream direction
+        x_offset = (i % 2) * dx * D  # Alternate turbines in crosswind direction
+        y_offset = i * dy * D       # Spacing in downstream direction
 
         for stl_file in stl_files:
             src_file = os.path.join(stl_folder, stl_file)

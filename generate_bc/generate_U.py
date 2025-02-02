@@ -44,7 +44,7 @@ boundaryField
     inlet
     {{
         type fixedValue;
-        value uniform (0   {vel}   0);
+        value $internalField;
     }}
     outlet
     {{
@@ -62,6 +62,18 @@ boundaryField
     {{
         type movingWallVelocity;
         value uniform (0 0 0);
+    }}
+    
+    AMI_turb{i}_1
+    {{
+        type cyclicAMI;
+        value $internalField;
+    }}
+    
+    AMI_turb{i}_2
+    {{
+        type cyclicAMI;
+        value $internalField;
     }}
 """
     bc += """

@@ -42,7 +42,7 @@ def generate_createpatchdict(nturb, output_folder):
 pointSync false;
 
 patches
-{
+(
 """
     for i in range(nturb):
         createpatchdict += f"""
@@ -78,7 +78,7 @@ patches
 
 """
     createpatchdict += """
-}
+);
 """
 
     # Write to file

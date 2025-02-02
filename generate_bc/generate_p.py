@@ -63,12 +63,12 @@ boundaryField
     AMI_turb{i}_1
     {{
         type cyclicAMI;
-        value 0;
+        value uniform 0;
     }}
     AMI_turb{i}_2
     {{
         type cyclicAMI;
-        value 0;
+        value uniform 0;
     }}
 """
     bc += """

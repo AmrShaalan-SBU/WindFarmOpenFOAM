@@ -58,11 +58,11 @@ def main():
     os.makedirs("runfolder", exist_ok=True)
 
     nturb = 2
-    dx = 6.5
-    dy = 0
+    dx = 0
+    dy = 6.5
     diameter = 1.46
     max_cells = 135
-    n_subdomains = 10
+    n_subdomains = 570
     rps = 13.3
     vel = 1.94
     p = 0
@@ -96,7 +96,7 @@ def main():
 
     # running dynamicMeshDict
     try:
-        run_dynamicmeshdict_generator(dynamicmesh_path=generate_dynamicmeshdictScript, nturb=nturb, dx=dx, dy=dy, rps=rps)
+        run_dynamicmeshdict_generator(dynamicmesh_path=generate_dynamicmeshdictScript, nturb=nturb, dx=dx, dy=dy, rps=rps, diameter=diameter)
     except:
         raise Exception("ERROR: run_dynamicmeshdict Failed")
 
@@ -144,7 +144,7 @@ def main():
 
 
 
-def run_dynamicmeshdict_generator(dynamicmesh_path, nturb, dx, dy, rps):
+def run_dynamicmeshdict_generator(dynamicmesh_path, nturb, dx, dy, rps, diameter):
     """
     Runs the dynamicMeshDict generator script.
     """
@@ -154,7 +154,8 @@ def run_dynamicmeshdict_generator(dynamicmesh_path, nturb, dx, dy, rps):
             "--nturb", str(nturb),
             "--dx", str(dx),
             "--dy", str(dy),
-            "--rps", str(rps)
+            "--rps", str(rps),
+            "--diameter", str(diameter)
 
         ])
 

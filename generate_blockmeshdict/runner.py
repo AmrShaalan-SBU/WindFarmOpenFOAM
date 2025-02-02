@@ -40,9 +40,9 @@ def generate_blockMeshDict(nturb, dx, dy, diameter, max_cells, output_folder):
     """Generates a blockMeshDict with uniform cubic cells."""
     D = diameter
     upwind_length = 5 * D
-    downwind_length = 10 * D + dx * D * (nturb - 1)
-    lateral_width = 5 * D * 2 + dy * D * (nturb - 1)
-    height = 5 * D * 2
+    downwind_length = 10 * D + dy * D * (nturb - 1)
+    lateral_width = 5 * D + dx * D * (nturb - 1)
+    height = 5 * D
 
     # Determine the largest dimension
     domain_length = downwind_length + upwind_length

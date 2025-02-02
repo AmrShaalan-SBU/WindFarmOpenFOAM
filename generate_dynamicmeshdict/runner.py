@@ -10,6 +10,7 @@ def get_options():
     parser.add_argument("--dy", type=float, required=True, help="Crosswind spacing as a multiple of turbine diameter.")
     parser.add_argument("--rps", type=float, required=True, help="Rotation of turbine in rps.")
     parser.add_argument("--output_folder", type=str, default="runfolder", help="Folder to save snappyHexMeshDict.")
+    parser.add_argument("--diameter", type=float, required=True, help= "Turbine Diameter")
     return parser.parse_args()
 
 
@@ -36,7 +37,7 @@ FoamFile
     return header_string
 
 
-def generate_dynamicmeshdict(nturb, dx, dy, rps, output_folder):
+def generate_dynamicmeshdict(nturb, dx, dy, rps, output_folder, diameter):
     """Generates dynamicMeshDict with same RPM for nturb"""
 
     dynamicmeshdict = get_header_string("dynamicMeshDict")
@@ -59,7 +60,7 @@ multiSolidBodyMotionSolverCoeffs
         solidBodyMotionFunction rotatingMotion;
         rotatingMotionCoeffs
         {{
-            origin ({dx*i} {dy*i} 0);
+            origin ({dx*i*diameter} {dy*i*diameter} 0);
             axis (0 1 0);
             omega {rps};
         }}
@@ -84,7 +85,8 @@ def main():
         dx=args.dx,
         dy=args.dy,
         rps=args.rps,
-        output_folder=args.output_folder
+        output_folder=args.output_folder,
+        diameter=args.diameter
     )
 
 
